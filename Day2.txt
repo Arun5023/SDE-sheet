@@ -1,0 +1,163 @@
+Q1-> 48. Rotate Image (https://leetcode.com/problems/rotate-image/)
+class Solution {
+public:
+    void rotate(vector<vector<int>>& mt) {
+        
+        int n = mt.size();
+        for(int i=0;i<n;i++)
+        {
+            for(int j=i+1;j<n;j++)
+            {
+                swap(mt[i][j],mt[j][i]);
+            }
+        }
+        
+        for(int i=0;i<n;i++)
+        {
+            reverse(mt[i].begin(),mt[i].end());
+        }
+    }
+};
+
+
+Q2-> 56. Merge Intervals (https://leetcode.com/problems/merge-intervals/)
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& arr) {
+        sort(arr.begin(),arr.end());
+        vector<int> prev=arr[0];
+        int i=1;
+        vector<vector<int>> ans;
+        while(i<arr.size())
+        {
+            if(prev[1]<arr[i][0])
+            {
+                ans.push_back(prev);
+                prev=arr[i];
+                i++;
+            }
+            else if(prev[1]<arr[i][1])
+            {
+                prev[1]=arr[i][1];
+                i++;
+            }
+            else
+                i++;
+        }
+        
+        ans.push_back(prev);
+        return ans;
+    }
+};
+
+
+Q3-> 88. Merge Sorted Array (https://leetcode.com/problems/merge-sorted-array/)
+class Solution {
+public:
+ void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+     int i = m - 1, j = n - 1, k = m + n - 1;
+     while(i >= 0 and j >= 0) {
+         if(nums1[i] < nums2[j]) {
+             nums1[k--] = nums2[j--];
+         } else {
+             nums1[k--] = nums1[i--];
+         }
+     }
+     while(j >= 0) {
+         nums1[k--] = nums2[j--];
+     }
+ }
+};
+
+
+Q4-> 287. Find the Duplicate Number (https://leetcode.com/problems/find-the-duplicate-number/)
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        
+        for(int i=0;i<nums.size();i++)
+        {
+            int curr = abs(nums[i]);
+            nums[curr-1]*=-1 ;
+            if(nums[curr-1]>0)
+                return curr;
+        }
+        return -1;
+    }
+};
+
+
+Q5-> Missing and repeating numbers (https://www.codingninjas.com/codestudio/problems/873366?topList=striver-sde-sheet-problems&utm_source=striver&utm_medium=website&leftPanelTab=0)
+#include <bits/stdc++.h> 
+pair<int,int> missingAndRepeating(vector<int> &arr, int n)
+{
+	// Write your code here
+    pair<int,int> ans;
+    for(int i=0;i<n;i++)
+    {
+        int curr=abs(arr[i]);
+        arr[curr-1]*=-1;
+        if(arr[curr-1]>0)
+        {
+            arr[curr-1]*=-1;
+            ans.second=abs(arr[i]);
+        }
+    }
+    for(int i=0;i<n;i++)
+    {
+        if(arr[i]>0)
+        {
+            ans.first=i+1;
+            break;
+        }
+    }
+    return ans;
+}
+
+
+Q6-> Count Inversions (https://www.codingninjas.com/codestudio/problems/count-inversions_615?leftPanelTab=0)
+#include <bits/stdc++.h>
+long long c=0;
+void merge(int l,int h,int mid,long long *arr)
+{
+    int i=l,j=mid+1,k=0;
+    long long temp[h-l+1];
+    while(i<=mid && j<=h)
+    {
+        if(arr[i]>arr[j])
+        {
+            temp[k++]=arr[j++];
+            c+=mid-i+1;
+        }
+        else
+            temp[k++]=arr[i++];
+    }
+    while(i<=mid)
+    {
+        temp[k++]=arr[i++];
+    }
+    while(j<=h)
+    {
+        temp[k++]=arr[j++];
+    }
+    for(int i=0;i<h-l+1;i++)
+    {
+        arr[i+l]=temp[i];
+    }
+    
+}
+void merge_sort(long long *arr,int l,int h)
+{
+    if(l<h)
+    {
+        int mid=(l+h)/2;
+        merge_sort(arr,l,mid);
+        merge_sort(arr,mid+1,h);
+        merge(l,h,mid,arr);
+    }
+}
+long long getInversions(long long *arr, int n){
+    // Write your code here.
+    merge_sort(arr,0,n-1);
+    return c;
+}
