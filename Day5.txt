@@ -1,0 +1,172 @@
+Q1-> 206. Reverse Linked List (https://leetcode.com/problems/reverse-linked-list/)
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* p=head,*q=NULL,*r;
+        while(p!=NULL)
+        {
+          r=q;
+          q=p;
+         p=p->next;
+          q->next=r;  
+        }
+        return q;
+    }
+};
+
+
+Q2-> 876. Middle of the Linked List (https://leetcode.com/problems/middle-of-the-linked-list/)
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        ListNode* slow=head;
+        ListNode* fast=head;
+        while(fast!=NULL && fast->next!=NULL)
+        {
+            slow=slow->next;
+            fast=fast->next->next;
+        }
+        return slow;
+    }
+};
+
+
+Q3-> 21. Merge Two Sorted Lists (https://leetcode.com/problems/merge-two-sorted-lists/)
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        ListNode* p,*ans=NULL;
+        if(list1==NULL && list2==NULL)
+            return NULL;
+        if(list1==NULL)
+            return list2;
+        if(list2==NULL)
+            return list1;;
+        
+        while(list1!=NULL && list2!=NULL)
+        {
+            if(list1->val > list2->val)
+            {
+                if(ans==NULL)
+                {
+                    ans=list2;
+                    p=ans;
+                }
+                else
+                {
+                    p->next=list2;
+                    p=p->next;
+                }
+                list2=list2->next;
+            }
+            else
+            {
+                 if(ans==NULL)
+                {
+                    ans=list1;
+                    p=ans;
+                }
+                else
+                {
+                    p->next=list1;
+                    p=p->next;
+                }
+                list1=list1->next;
+            }
+        }
+         if(list1!=NULL)
+        {
+           p->next=list1;
+        }
+        if(list2!=NULL)
+        {
+            p->next=list2;
+        }
+        return ans;
+        
+    }
+};
+
+
+Q4-> 19. Remove Nth Node From End of List (https://leetcode.com/problems/remove-nth-node-from-end-of-list/)
+class Solution {
+public:
+    int length(ListNode* head)
+    {
+        int l=0;
+        ListNode* t=head;
+        while(t!=NULL)
+        {
+            l++;
+            t=t->next;
+        }
+        return l;
+    }
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        int l=length(head);
+        if(l==1)
+            return NULL;
+        int len=l-n;
+        if(len==0)
+            return head->next;
+        ListNode* t=head;
+        while(--len)
+        {
+            t=t->next;
+        }
+        t->next=t->next->next;
+        return head;
+            
+    }
+};
+
+
+Q5-> 2. Add Two Numbers (https://leetcode.com/problems/add-two-numbers/)
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* ans=NULL;
+        ListNode* p;
+        int carry=0;
+        while(l1!=NULL ||l2!=NULL)
+        {
+            int a = l1?l1->val:0;
+            int b=l2?l2->val:0;
+            int sum=a+b+carry;
+            
+            ListNode* t = new ListNode(sum%10);
+            if(ans==NULL)
+            {
+                ans=t;
+                p=ans;
+            }
+            else
+            {
+                p->next=t;
+                p=p->next;
+            }
+            if(sum>9)
+                carry=1;
+            else
+                carry=0;
+            
+            if(l1)
+            l1=l1->next;
+            if(l2)
+            l2=l2->next;
+        }
+        if(carry)
+            p->next=new ListNode(carry);
+        return ans; 
+    }
+};
+
+
+Q6-> 237. Delete Node in a Linked List (https://leetcode.com/problems/delete-node-in-a-linked-list/)
+class Solution {
+public:
+    void deleteNode(ListNode* node) {
+        node->val=node->next->val;
+        node->next=node->next->next;
+    }
+};
