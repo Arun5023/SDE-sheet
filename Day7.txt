@@ -1,0 +1,183 @@
+Q1-> 61. Rotate List (https://leetcode.com/problems/rotate-list/)
+class Solution {
+public:
+    int length(ListNode* head)
+    {
+        ListNode* t=head;
+        int count=0;
+        while(t!=NULL)
+        {
+            count++;
+            t=t->next;
+        }
+        return count;
+    }
+    ListNode* rotateRight(ListNode* head, int k) {
+        if(head==NULL || head->next==NULL)
+            return head;
+        
+        int n = length(head);
+        k=k%n;
+        if(k==0)
+            return head;
+        int l = n-k;
+        ListNode* t=head;
+        ListNode* q,*s=NULL;
+        ListNode* ans=NULL,*p;
+        while(l--)
+        {
+             if(s==NULL)
+            {
+                s=t;
+                q=s;
+            }
+            else
+            {
+                q->next=t;
+                q=q->next;
+            }
+          t=t->next;  
+        }
+        q->next=NULL;
+        while(t!=NULL)
+        {
+            if(ans==NULL)
+            {
+                ans=t;
+                p=ans;
+            }
+            else
+            {
+                p->next=t;
+                p=p->next;
+            }
+            t=t->next;
+        }
+        
+        p->next=s;
+     
+        return ans;
+    }
+};
+
+
+Q2-> 138. Copy List with Random Pointer (https://leetcode.com/problems/copy-list-with-random-pointer/)
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+       map<Node*,Node*> mp;
+        Node* p=head;
+        while(p)
+        {
+            mp[p]= new Node(p->val);
+            p=p->next;
+        }
+        p=head;
+        while(p)
+        {
+            mp[p]->next=mp[p->next];
+            mp[p]->random=mp[p->random];
+            p=p->next;
+        }
+        return mp[head];
+    }
+};
+
+
+Q3-> 15. 3Sum (https://leetcode.com/problems/3sum/)
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+          sort(nums.begin(), nums.end());
+    vector<vector<int>> res;
+    for (unsigned int i=0; i<nums.size(); i++) {
+        if ((i>0) && (nums[i]==nums[i-1]))
+            continue;
+        int l = i+1, r = nums.size()-1;
+        while (l<r) {
+            int s = nums[i]+nums[l]+nums[r];
+            if (s>0) r--;
+            else if (s<0) l++;
+            else {
+                res.push_back(vector<int> {nums[i], nums[l], nums[r]});
+                while (l<r && nums[l]==nums[l+1]) l++;
+                while (l<r && nums[r]==nums[r-1]) r--;
+                l++; r--;
+            }
+        }
+    }
+    return res;
+    }
+};
+
+
+Q4-> 42. Trapping Rain Water (https://leetcode.com/problems/trapping-rain-water/)
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        
+        int n=height.size();
+        int maxleft[n];
+        int maxright[n];
+        maxleft[0]=height[0];
+        for(int i=1;i<n;i++)
+            maxleft[i]=max(maxleft[i-1],height[i]);
+        
+        maxright[n-1]=height[n-1];
+        for(int i=n-2;i>=0;i--)
+            maxright[i]=max(maxright[i+1],height[i]);
+        
+        int water[n];
+        for(int i=0;i<n;i++)
+            water[i]=min(maxleft[i],maxright[i])-height[i];
+        
+        int sum=0;
+        for(int i=0;i<n;i++)
+            sum+=water[i];
+        
+        return sum;
+    }
+};
+
+
+Q5-> 26. Remove Duplicates from Sorted Array (https://leetcode.com/problems/remove-duplicates-from-sorted-array/)
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int j=0;
+        for(int i=1;i<nums.size();i++)
+        {
+            if(nums[i-1]!=nums[i])
+            {
+                nums[j]=nums[i-1];
+                j++;
+            }
+        }
+        nums[j]=nums[nums.size()-1];
+        j++;
+        
+        return j;
+    }
+};
+
+
+Q6-> 485. Max Consecutive Ones (https://leetcode.com/problems/max-consecutive-ones/)
+class Solution {
+public:
+    int findMaxConsecutiveOnes(vector<int>& nums) {
+        int ans=0;
+        int t=0;
+        for(int i=0;i<nums.size();i++)
+        {
+            if(nums[i]==1)
+                t++;
+            else
+            {
+                ans=max(ans,t);
+                t=0;
+            }
+        }
+        ans=max(ans,t);
+        return ans;
+    }
+};
