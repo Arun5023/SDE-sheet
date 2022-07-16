@@ -1,0 +1,214 @@
+Q1-> 160. Intersection of Two Linked Lists (https://leetcode.com/problems/intersection-of-two-linked-lists/)
+class Solution {
+public:
+    int length(ListNode* root)
+    {
+        int l=0;
+        while(root!=NULL)
+        {
+            l++;
+            root=root->next;
+        }
+        return l;
+    }
+    ListNode *getIntersectionNode(ListNode *a, ListNode *b) {
+        if(a==NULL || b==NULL)
+            return NULL;
+        
+        int l1=length(a);
+        int l2=length(b);
+        int d = abs(l2-l1);
+        if(l1>l2)
+        {
+            while(d--)
+                a=a->next;
+        }
+        else
+        {
+            while(d--)
+                b=b->next;
+        }
+        while(a!=NULL && b!=NULL && a!=b)
+        {
+            a=a->next;
+            b=b->next;
+        }
+        return a;
+    }
+};
+
+
+Q2-> 141. Linked List Cycle (https://leetcode.com/problems/linked-list-cycle/)
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        if(head==NULL)
+            return false;
+        
+        int f=0;
+        ListNode* fast=head,*slow=head;
+        while(fast!=NULL && (fast!=slow||f==0))
+        {
+            f=1;
+            slow=slow->next;
+            fast=fast->next;
+            if(fast)
+                fast=fast->next;
+        }
+        if(fast==NULL)
+            return false;
+        else
+            return true;
+    }
+};
+
+
+Q3-> 25. Reverse Nodes in k-Group (https://leetcode.com/problems/reverse-nodes-in-k-group/)
+class Solution {
+public:
+     int length(ListNode* root)
+    {
+        int l=0;
+        while(root!=NULL)
+        {
+            l++;
+            root=root->next;
+        }
+        return l;
+    }
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        if(head==NULL)
+            return  head;
+        if(length(head)<k)
+            return head;
+        
+        ListNode* p=head,*q=NULL,*r=NULL;
+        for(int i=0;i<k&&p!=NULL;i++)
+        {
+            r=q;
+            q=p;
+            p=p->next;
+            q->next=r;
+        }
+        head->next=reverseKGroup(p,k);
+        return q;
+    }
+};
+
+
+Q4-> 234. Palindrome Linked List (https://leetcode.com/problems/palindrome-linked-list/)
+class Solution {
+public:
+   
+    ListNode* reverse(ListNode* root)
+    {
+        ListNode* p=root,*q=NULL,*r;
+        while(p!=NULL)
+        {
+           
+            r=q;
+            q=p;
+            p=p->next;
+            q->next=r;
+        }
+      
+        return q;
+    }
+    bool isPalindrome(ListNode* head) {
+        if(head==NULL || head->next==NULL)
+            return true;
+        
+       ListNode *fast = head;
+        ListNode *slow = head;
+        while (fast && fast->next) {
+            fast = fast->next->next;
+            slow = slow->next;
+        }
+        if (fast)
+            slow = slow->next;
+
+		// reverse the last half of the list
+        ListNode *dummy = reverse(slow);
+        
+
+		// compare each half of the list
+        
+        while(dummy){
+            if (dummy->val == head->val){
+                dummy = dummy->next;
+                head = head->next;
+            } 
+            else
+                return false;
+        }
+
+        return true;
+    }
+};
+
+
+Q5-> 142. Linked List Cycle II (https://leetcode.com/problems/linked-list-cycle-ii/)
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode* slow=head;
+        ListNode* fast=head;
+        int f=0;
+        while(fast!=NULL && (slow!=fast||f==0))
+        {
+            f=1;
+            slow=slow->next;
+            fast=fast->next;
+            if(fast)
+                fast=fast->next;
+        }
+        if(fast==NULL)
+            return NULL;
+        else
+        {
+            while(slow!=head)
+            {
+                slow=slow->next;
+                head=head->next;
+            }
+        }
+        return slow;
+    }
+};
+
+
+Q6-> Flatten A Linked List (https://www.codingninjas.com/codestudio/problems/1112655?topList=striver-sde-sheet-problems&utm_source=striver&utm_medium=website)
+Node* mergeTwoLinkedList(Node* r1 , Node* r2){
+    Node* dummyNode = new Node(0);
+    
+    Node* curr = dummyNode;
+    while(r1 != NULL && r2 != NULL){
+        if(r1->data <= r2->data){
+            curr->child = r1;
+            r1 = r1->child;
+            curr = curr->child;
+        }
+        else{
+            curr->child = r2;
+            r2 = r2->child;
+            curr = curr->child;
+        }
+    }
+    if(r1 != NULL){
+        curr->child = r1;
+    }
+    if(r2 != NULL){
+        curr->child = r2;
+    }
+    dummyNode->child->next=NULL;
+    return dummyNode->child;
+}
+    
+Node *flattenLinkedList(Node *root)
+{
+    if(root == NULL || root->next == NULL){
+        return root;
+    }
+    root->next = flattenLinkedList(root->next);
+    return mergeTwoLinkedList(root, root->next);
+}
