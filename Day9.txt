@@ -1,0 +1,177 @@
+Q1-> Subset Sums (https://practice.geeksforgeeks.org/problems/subset-sums2234/1)
+ vector<int> ans;
+    void solve(int i,int n,vector<int>& arr,int curr)
+    {
+      
+       if(i==n)
+       {
+         ans.push_back(curr);
+         return ;
+       }
+        
+        solve(i+1,n,arr,curr);
+        solve(i+1,n,arr,curr+arr[i]);
+        
+    }
+    vector<int> subsetSums(vector<int> arr, int N)
+    {
+        // Write Your Code here
+        solve(0,N,arr,0);
+        return ans;
+    }
+
+
+Q2-> 90. Subsets II (https://leetcode.com/problems/subsets-ii/)
+class Solution {
+public:
+    vector<vector<int>> ans;
+    void solve(int i,vector<int>& nums,vector<int>& t)
+    {
+        ans.push_back(t);
+        for(int j=i;j<nums.size();j++)
+        {
+            if(j>i && nums[j]==nums[j-1])
+                continue;
+            t.push_back(nums[j]);
+            solve(j+1,nums,t);
+            t.pop_back();
+        }
+    }
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        vector<int> t;
+        sort(nums.begin(),nums.end());
+        solve(0,nums,t);
+        
+        return ans;
+    }
+};
+
+
+Q3-> 39. Combination Sum (https://leetcode.com/problems/combination-sum/)
+class Solution {
+public:
+    vector<vector<int>> ans;
+    void solve(vector<int>& arr,int n,int k,vector<int>& t)
+    {
+        if(n<0)
+        {
+            return ;
+        }
+        if(k==0)
+        {
+            ans.push_back(t);
+            return ;
+        }
+        if(arr[n]<=k)
+        {
+            t.push_back(arr[n]);
+            solve(arr,n,k-arr[n],t);
+            t.pop_back();
+            solve(arr,n-1,k,t);
+        }
+        else
+        {
+            solve(arr,n-1,k,t);
+        }
+    }
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<int> t;
+        solve(candidates,candidates.size()-1,target,t);
+        return ans;
+    }
+};
+
+
+Q4-> 40. Combination Sum II (https://leetcode.com/problems/combination-sum-ii/)
+class Solution {
+public:
+   void helper(int index, int target, vector<int>&candidates, vector<vector<int>>&ans, vector<int>&ds){
+       
+        if(target == 0){
+            ans.push_back(ds);
+            return;
+        }
+        for(int i = index; i< candidates.size(); i++){
+            if(candidates[i] > target) break;  
+            if(i  > index && candidates[i] == candidates[i-1])
+                continue;
+                
+            ds.push_back(candidates[i]);
+            helper(i+1, target- candidates[i], candidates, ans, ds); 
+            ds.pop_back();
+        }
+        
+    }
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+        vector<vector<int>>ans;
+        vector<int>ds;
+        helper(0, target, candidates, ans, ds);
+        return ans;
+    }
+};
+
+
+Q5-> 131. Palindrome Partitioning (https://leetcode.com/problems/palindrome-partitioning/)
+class Solution {
+public:
+    
+    vector<vector<string>> ans;
+    void solve(int idx,string s,vector<string>& arr)
+    {
+        if(idx==s.length())
+        {
+            ans.push_back(arr);
+            return ;
+        }
+        else
+        {for(int i=idx;i<s.length();i++)
+        {
+            if(ispali(s,idx,i))
+            {
+                arr.push_back(s.substr(idx,i-idx+1));
+                solve(i+1,s,arr);
+                arr.pop_back();
+            }
+        }}
+    }
+    bool ispali(string & s,int l,int r)
+    {
+        while (l < r) {
+            if (s[l++] != s[r--]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    vector<vector<string>> partition(string s) {
+        vector<string> rr;
+        solve(0,s,rr);
+        return ans;
+    }
+};
+
+
+Q6-> 60. Permutation Sequence (https://leetcode.com/problems/permutation-sequence/)
+string getPermutation(int n, int k) {
+        int fact = 1;
+      vector < int > numbers;
+      for (int i = 1; i < n; i++) {
+        fact = fact * i;
+        numbers.push_back(i);
+      }
+      numbers.push_back(n);
+      string ans = "";
+      k = k - 1;
+      while (true) {
+        ans = ans + to_string(numbers[k / fact]);
+        numbers.erase(numbers.begin() + k / fact);
+        if (numbers.size() == 0) {
+          break;
+        }
+
+        k = k % fact;
+        fact = fact / numbers.size();
+      }
+      return ans; 
+}
