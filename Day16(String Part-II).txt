@@ -1,0 +1,221 @@
+Q1-> Z Algorithm (https://www.codingninjas.com/codestudio/problems/1112619?topList=striver-sde-sheet-problems&utm_source=striver&utm_medium=website&leftPanelTab=0)
+int zAlgorithm(string str, string pat, int n, int m)
+{
+    int count=0; 
+    int i=0,j=0;
+    while(i<str.length())
+    {
+        if(str[i]==pat[j])
+        {
+            i++;
+            j++;
+            if(j>=pat.length())
+            {
+               count++;
+                if(i==str.length())
+                    return count;
+                
+                i=i-j+1;
+                j=0;
+            }
+        }
+        else
+        {
+            i=i-j+1;
+            j=0;
+        }  
+    }
+    return count;
+}
+
+
+Q2-> Find Pattern in String - KMP Algorithm (https://www.codingninjas.com/codestudio/problems/1112621?topList=striver-sde-sheet-problems&utm_source=striver&utm_medium=website&leftPanelTab=0)
+void find_lps(vector<int> &lps, string p)
+{
+    lps[0] = 0;
+    int len = 0;
+    for (int i=1;i<lps.size();i++)
+    {
+        while (len>0 && p[i] != p[len])
+            len = lps[len-1];
+        if (p[i] == p[len])
+            len++;
+        lps[i] = len;
+    }
+}
+bool findPattern(string p, string s)
+{
+    int m = p.length();
+    int n = s.length();
+    vector<int>lps(m,0);
+    find_lps(lps,p);
+    int i=0,j=0;
+    while(i<n)
+    {
+        if(s[i]==p[j])
+        {
+            i++;
+            j++;
+        }
+        else
+        {
+            if(j!=0)
+                j=lps[j-1];
+            else
+                i++;
+        }
+        if(j==p.size())
+            return true;
+    }
+    return false;
+}
+
+
+Q3-> Minimum Characters For Palindrome (https://www.codingninjas.com/codestudio/problems/893000?topList=striver-sde-sheet-problems&utm_source=striver&utm_medium=website&leftPanelTab=0)
+int minCharsforPalindrome(string str) {
+	int ans=0;
+    int i=0,j=str.size()-1;
+    while(i<j)
+    {
+        if(str[i]==str[j])
+        {
+            i++;
+            j--;
+        }
+        else
+        {
+            j=j+i;
+            ans=str.size()-j;
+            j--;
+            i=0;
+        }
+    }
+     return ans;
+}
+
+
+Q4-> 242. Valid Anagram (https://leetcode.com/problems/valid-anagram/)
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        if(s.length()!=t.length())
+            return false;
+        
+        map<char,int> mp1,mp2;
+        for(int i=0;i<s.length();i++)
+        {
+            mp1[s[i]]++;
+            mp2[t[i]]++;
+        }
+      for(auto it1=mp1.begin(),it2=mp2.begin();it1!=mp1.end()&&it2!=mp2.end();it1++,it2++)
+      {
+          if(it1->first!=it2->first||it1->second!=it2->second)
+              return false;
+      }
+        return true;
+    }
+};
+
+
+Q5-> 38. Count and Say (https://leetcode.com/problems/count-and-say/)
+class Solution {
+public:
+    string countAndSay(int n) {
+        if(n==1)
+            return "1";
+        if(n==2)
+            return "11";
+            
+        string ans="11";
+        for(int i=3;i<=n;i++)
+        {
+            string t="";
+            int l=ans.length();
+            int j=0;
+            int count=0;
+            while(j<l)
+            {
+               if( ans[j]==ans[j+1]){
+                   count++;
+                  j++;
+               }
+                else{
+                    t+=to_string(count+1)+ans[j];
+                    count=0;
+                    j++;
+                }
+            }
+            ans=t;
+        }
+        
+        return ans;
+        
+    }
+};
+
+
+Q6-> 165. Compare Version Numbers (https://leetcode.com/problems/compare-version-numbers/)
+class Solution {
+public:
+    int compareVersion(string v1, string v2) {
+        if(v1==v2)
+            return 0;
+        
+        int i=0,j=0;
+        while(i<v1.size()&&j<v2.size())
+        {
+            int a1=0;
+            while(i<v1.size() && v1[i]!='.')
+            {
+                a1=a1*10 + v1[i]-48;
+                i++;
+            }
+            
+            int a2=0;
+            while(j<v2.size()&&v2[j]!='.')
+            {
+                a2=a2*10+v2[j]-48;
+                j++;
+            }
+            i++;
+            j++;
+            if(a1>a2)
+                return 1;
+            if(a2>a1)
+                return -1;
+        }
+        while(j<v2.size())
+        {
+             int a2=0;
+            int a1=0;
+            while(j<v2.size()&&v2[j]!='.')
+            {
+                a2=a2*10+v2[j]-48;
+                j++;
+            }
+            if(a1>a2)
+                return 1;
+            if(a2>a1)
+                return -1;
+            
+            j++;
+        }
+        while(i<v1.size())
+        {
+            int a1=0;
+            int a2=0;
+            while(i<v1.size() && v1[i]!='.')
+            {
+                a1=a1*10 + v1[i]-48;
+                i++;
+            }
+             if(a1>a2)
+                return 1;
+            if(a2>a1)
+                return -1;
+            
+            i++;
+        }
+        return 0;
+    }
+};
