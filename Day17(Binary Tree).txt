@@ -1,0 +1,258 @@
+Q1-> 94. Binary Tree Inorder Traversal (https://leetcode.com/problems/binary-tree-inorder-traversal/)
+class Solution {
+public:
+     void solve(TreeNode* root,vector<int>&res)
+    {
+        if(!root)return;
+        solve(root->left,res);
+        res.push_back(root->val);
+        solve(root->right,res);
+    }
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int>res;
+        solve(root,res);
+        return res;
+    }
+};
+
+
+Q2-> 144. Binary Tree Preorder Traversal (https://leetcode.com/problems/binary-tree-preorder-traversal/)
+class Solution {
+public:
+      void solve(TreeNode* root,vector<int>&res)
+    {
+        if(!root)return;
+          
+        res.push_back(root->val);
+        solve(root->left,res);
+        solve(root->right,res);
+    }
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int>res;
+        solve(root,res);
+        return res;
+    }
+};
+
+
+Q3-> 145. Binary Tree Postorder Traversal (https://leetcode.com/problems/binary-tree-postorder-traversal/)
+class Solution {
+public:
+      void solve(TreeNode* root,vector<int>&res)
+     {
+        if(!root)return;
+          
+        solve(root->left,res);
+        solve(root->right,res);
+        res.push_back(root->val);
+     }
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int>res;
+        solve(root,res);
+        return res;
+    }
+};
+
+
+Q6-> Left View of Binary Tree (https://practice.geeksforgeeks.org/problems/left-view-of-binary-tree/1)
+vector<int> leftView(Node *root)
+{
+   // Your code here
+   vector<int> v;
+   if(root==NULL)
+   return v;
+   
+   queue<Node*> q;
+   q.push(root);
+   while(!q.empty())
+   {
+       int n=q.size();
+       for(int i=0;i<n;i++)
+       {
+           Node* curr=q.front();
+           q.pop();
+           if(i==0)
+           v.push_back(curr->data);
+           if(curr->left)
+           q.push(curr->left);
+           if(curr->right)
+           q.push(curr->right);
+       }
+   }
+   return v;
+}
+
+
+Q7-> Bottom View of Binary Tree (https://practice.geeksforgeeks.org/problems/bottom-view-of-binary-tree/1)
+vector <int> bottomView(Node *root) {
+        // Your Code Here
+        vector<int> v;
+        if(root==NULL)
+        return v;
+        
+        map<int,int> m;
+        queue<pair<Node*,int>> q;
+        q.push({root,0});
+        while(!q.empty())
+        {
+            Node* curr=q.front().first;
+            int h=q.front().second;
+            q.pop();
+            m[h]=curr->data;
+            if(curr->left)
+            q.push({curr->left,h-1});
+            if(curr->right)
+            q.push({curr->right,h+1});
+        }
+        for(auto i : m)
+        {
+            v.push_back(i.second);
+        }
+        return v;
+}
+
+
+Q8-> Top View of Binary Tree (https://practice.geeksforgeeks.org/problems/top-view-of-binary-tree/1)
+vector<int> topView(Node *root)
+    {
+        //Your code here
+        vector<int> v;
+        if(root==NULL)
+        return v;
+        
+        map<int,int> m;
+        queue<pair<Node*,int>> q;
+        q.push({root,0});
+        while(!q.empty())
+        {
+            Node* curr=q.front().first;
+            int h=q.front().second;
+            q.pop();
+            if(m[h]==0)
+            {
+                m[h]=curr->data;
+            }
+            if(curr->left)
+            q.push({curr->left,h-1});
+            if(curr->right)
+            q.push({curr->right,h+1});
+            
+        }
+        for(auto i : m)
+        {
+            v.push_back(i.second);
+        }
+        return v;
+}
+
+
+Q9-> Tree Traversals (https://www.codingninjas.com/codestudio/problems/981269?topList=striver-sde-sheet-problems&utm_source=striver&utm_medium=website&leftPanelTab=0)
+#include <bits/stdc++.h>
+void solve(BinaryTreeNode<int> *root, vector<int>& pre,vector<int>& in,vector<int>& po)
+{
+    if(root==NULL)
+        return;
+    pre.push_back(root->data);
+    solve(root->left,pre,in,po);
+    in.push_back(root->data);
+    solve(root->right,pre,in,po);
+    po.push_back(root->data);
+}
+vector<vector<int>> getTreeTraversal(BinaryTreeNode<int> *root){
+    // Write your code here.
+    vector<int> in,pre,po;
+    solve(root,pre,in,po);
+    vector<vector<int>> ans;
+    ans.push_back(in);
+     ans.push_back(pre);
+     ans.push_back(po);
+    return ans;
+}
+
+
+Q10-> 987. Vertical Order Traversal of a Binary Tree (https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/)
+class Solution {
+public:
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        map<int, map<int, multiset<int>>> nodes;
+        queue<pair<TreeNode*, pair<int, int>>> todo;
+        todo.push({root, {0, 0}});
+        while (!todo.empty()) {
+            auto p = todo.front();
+            todo.pop();
+            TreeNode* node = p.first;
+            int x = p.second.first, y = p.second.second;
+            nodes[x][y].insert(node -> val);
+            if (node -> left) {
+                todo.push({node -> left, {x - 1, y + 1}});
+            }
+            if (node -> right) {
+                todo.push({node -> right, {x + 1, y + 1}});
+            }
+        }
+        vector<vector<int>> ans;
+        for (auto p : nodes) {
+            vector<int> col;
+            for (auto q : p.second) {
+                col.insert(col.end(), q.second.begin(), q.second.end());
+            }
+            ans.push_back(col);
+        }
+        return ans;
+    }
+};
+
+
+Q11-> Path to Given Node (https://www.interviewbit.com/problems/path-to-given-node/)
+bool solve1(TreeNode* A,int B,vector<int>& ans)
+{
+    if(A==NULL)
+    return false;
+    
+    ans.push_back(A->val);
+    if(A->val==B)
+    {
+       return true; 
+    }
+    
+    if(solve1(A->left,B,ans)||solve1(A->right,B,ans))
+    return true;
+    
+    
+    ans.pop_back();
+    return false;
+}
+vector<int> Solution::solve(TreeNode* A, int B) {
+    vector<int> ans;
+     solve1(A,B,ans);
+     return ans;
+}
+
+
+Q12-> 662. Maximum Width of Binary Tree (https://leetcode.com/problems/maximum-width-of-binary-tree/)
+class Solution {
+public:
+    int widthOfBinaryTree(TreeNode* root) {
+	if (!root)return 0;
+	queue<pair<TreeNode*, unsigned long long int>> que;
+	que.push({root, 0});
+	int width = 0;
+	while (que.size() != 0) {
+		unsigned long long int left = que.front().second, right = 0;
+		int size = que.size();
+		while (size-- > 0) {
+			pair<TreeNode*, unsigned long long int> rNode = que.front();
+			que.pop();
+			right = rNode.second;
+			if (rNode.first->left) {
+				que.push({rNode.first->left, 2 * rNode.second + 1});
+			}
+			if (rNode.first->right) {
+				que.push({rNode.first->right, 2 * rNode.second + 2});
+			}
+		}
+		width = max(width, int(right - left + 1));
+	}
+	return width;
+}
+};
