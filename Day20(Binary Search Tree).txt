@@ -1,0 +1,185 @@
+Q1-> 116. Populating Next Right Pointers in Each Node (https://leetcode.com/problems/populating-next-right-pointers-in-each-node/)
+class Solution {
+public:
+    Node* connect(Node* root) {
+        if(root==NULL)
+            return root;
+        
+        queue<Node*> q;
+        q.push(root);
+        while(!q.empty())
+        {
+            int n = q.size();
+            for(int i=0;i<n;i++)
+            {
+                Node* curr = q.front();
+                q.pop();
+                
+                if(i==n-1)
+                    curr->next=NULL;
+                else
+                curr->next=q.front();
+                
+                if(curr->left)
+                    q.push(curr->left);
+                if(curr->right)
+                    q.push(curr->right);
+            }
+        }
+        return root;
+    }
+};
+
+
+Q2-> 700. Search in a Binary Search Tree (https://leetcode.com/problems/search-in-a-binary-search-tree/)
+class Solution {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        if(root==NULL)
+            return NULL;
+        
+        if(root->val==val)
+            return root;
+        
+        if(root->val>val)
+            return searchBST(root->left,val);
+        else
+            return searchBST(root->right,val);
+    }
+};
+
+
+Q3-> 108. Convert Sorted Array to Binary Search Tree (https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/)
+class Solution {
+public:
+    
+    TreeNode* solve(vector<int> nums,int l,int h)
+    {
+        if(l<=h)
+        {
+            int m = (l+h)/2;
+            TreeNode* t = new TreeNode(nums[m]);
+            t->left = solve(nums,l,m-1);
+            t->right = solve(nums,m+1,h);
+            return t;
+        }
+        return NULL;
+    }
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        return solve(nums,0,nums.size()-1);
+    }
+};
+
+
+Q4-> 1008. Construct Binary Search Tree from Preorder Traversal (https://leetcode.com/problems/construct-binary-search-tree-from-preorder-traversal/)
+class Solution {
+public:
+    TreeNode* bstFromPreorder(vector<int>& pre) {
+        stack<TreeNode*> st;
+        TreeNode* root=NULL,*p,*t;
+        int i=0;
+        int n=pre.size();
+        root=new TreeNode(pre[i++]);
+        p=root;
+        while(i<n)
+        {
+            if(pre[i]<p->val)
+            {
+                t=new TreeNode(pre[i++]);
+                p->left=t;
+                st.push(p);
+                p=t;
+            }
+            else 
+            {
+                if(st.size()==0)
+                {
+                    t=new TreeNode(pre[i++]);
+                    p->right=t;
+                    p=t;
+                }
+                else if(pre[i]>p->val && pre[i]<st.top()->val)
+                {
+                     t=new TreeNode(pre[i++]);
+                    p->right=t;
+                    p=t;
+                }
+                else{
+                    p=st.top();
+                    st.pop();
+                }
+            }
+        }
+        return root;
+    }
+};
+
+
+Q5-> 98. Validate Binary Search Tree (https://leetcode.com/problems/validate-binary-search-tree/)
+class Solution {
+public:
+    
+    
+    int count=0;
+    TreeNode* prev=NULL;
+    void inorder(TreeNode* root)
+    {
+        if(root==NULL)
+            return ;
+        
+        inorder(root->left);
+        
+        if(prev && root->val<=prev->val)
+            count++;
+        
+        prev=root;
+        
+        
+        inorder(root->right);
+    }
+    
+    
+    bool isValidBST(TreeNode* root) {
+        inorder(root);
+        if(count==0)
+            return true;
+        else
+            return false;
+    }
+};
+
+
+Q6-> 235. Lowest Common Ancestor of a Binary Search Tree (https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/)
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(root->val>p->val && root->val>q->val)
+            return lowestCommonAncestor(root->left,p,q);
+        else if(root->val<p->val && root->val<q->val)
+            return lowestCommonAncestor(root->right,p,q);
+        else
+            return root;
+    }
+};
+
+
+Q7-> Predecessor and Successor (https://practice.geeksforgeeks.org/problems/predecessor-and-successor/1)
+void findPreSuc(Node* root, Node*& pre, Node*& suc, int key)
+{
+    if(root==NULL)
+    return ;
+    if(root->key<key){
+        pre=root;
+    findPreSuc(root->right,pre,suc,key);
+    }
+    if(root->key>key)
+    {
+        suc=root;
+       findPreSuc(root->left,pre,suc,key);
+    }
+    if(root->key==key)
+    {
+        findPreSuc(root->left,pre,suc,key);
+        findPreSuc(root->right,pre,suc,key);
+    }
+}
