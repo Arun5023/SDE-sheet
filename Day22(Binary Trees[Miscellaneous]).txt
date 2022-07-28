@@ -1,0 +1,134 @@
+Q1-> Convert A Given Binary Tree To Doubly Linked List (https://www.codingninjas.com/codestudio/problems/893106?topList=striver-sde-sheet-problems&utm_source=striver&utm_medium=website&leftPanelTab=0)
+void solve(BinaryTreeNode<int>* root,BinaryTreeNode<int>* &ans)
+{
+    if(root==NULL)
+        return ;
+    
+    solve(root->left,ans);
+    BinaryTreeNode<int>* temp= new BinaryTreeNode<int>(root->data);
+    ans->right=temp;
+    temp->left=ans;
+    ans=temp;
+    solve(root->right,ans);
+}
+BinaryTreeNode<int>* BTtoDLL(BinaryTreeNode<int>* root) {
+   BinaryTreeNode<int>* ans=new BinaryTreeNode<int>(0);
+    BinaryTreeNode<int>* p=ans;
+    solve(root,p);
+    return ans->right;
+}
+
+
+Q2-> 295. Find Median from Data Stream (https://leetcode.com/problems/find-median-from-data-stream/)
+class MedianFinder {
+public:
+    priority_queue<int> maxHeap;
+    priority_queue<int, vector<int>, greater<int>> minHeap;
+    
+    MedianFinder() {
+    }
+    void addNum(int num) {
+        maxHeap.push(num);
+        minHeap.push(maxHeap.top());
+        maxHeap.pop();
+        if (minHeap.size() > maxHeap.size()) {
+            maxHeap.push(minHeap.top());
+            minHeap.pop();
+        }
+    }
+    double findMedian() {
+        if (maxHeap.size() > minHeap.size()) return maxHeap.top();
+        return (maxHeap.top() + minHeap.top()) / 2.0;
+    }
+};
+
+
+Q3-> 703. Kth Largest Element in a Stream (https://leetcode.com/problems/kth-largest-element-in-a-stream/)
+class KthLargest {
+public:
+     priority_queue<int,vector<int>,greater<int>>q;
+    int size;
+    KthLargest(int k, vector<int>& nums) { 
+        size=k;
+        for(auto c:nums)
+        {
+            q.push(c);
+            if(q.size() > k) q.pop();
+        }
+    }
+    
+    int add(int val) {
+        q.push(val);
+        if(q.size() > size) q.pop();
+        return q.top();
+    }
+};
+
+
+Q4-> Distinct Numbers in Window (https://www.interviewbit.com/problems/distinct-numbers-in-window/)
+vector<int> Solution::dNums(vector<int> &A, int B) {
+    int i=0,j=0;
+    int n=A.size();
+    unordered_map<int,int> mp;
+    vector<int> ans;
+    while(j<n)
+    {
+        mp[A[j]]++;
+        if(j-i+1<B)
+        {
+            j++;
+        }
+        else {
+            ans.push_back(mp.size());
+            mp[A[i]]--;
+            if(mp[A[i]]==0)
+            mp.erase(A[i]);
+            
+            i++;
+            j++;
+        }
+    }
+    return ans;
+}
+
+
+Q5-> 215. Kth Largest Element in an Array (https://leetcode.com/problems/kth-largest-element-in-an-array/)
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        priority_queue<int,vector<int>,greater<int>> pq;
+        for(int i=0;i<nums.size();i++)
+        {
+            pq.push(nums[i]);
+            if(pq.size()>k)
+                pq.pop();
+        }
+        return pq.top();
+    }
+};
+
+
+Q6-> 733. Flood Fill (https://leetcode.com/problems/flood-fill/)
+class Solution {
+public:
+    void solve(int i,int j,vector<vector<int>>& matrix,int c,int k)
+    {
+        if(i>=matrix.size()||j>=matrix[0].size()||i<0||j<0)
+            return ;
+        if(matrix[i][j]!=k)
+            return ;
+        
+        matrix[i][j]=c;
+        solve(i+1,j,matrix,c,k);
+        solve(i-1,j,matrix,c,k);
+        solve(i,j+1,matrix,c,k);
+        solve(i,j-1,matrix,c,k);
+    }
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        if(image[sr][sc]==color)
+            return image;
+        
+        solve(sr,sc,image,color,image[sr][sc]);
+        return image;
+    }
+};
