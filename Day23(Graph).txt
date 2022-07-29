@@ -1,0 +1,417 @@
+Q1-> 133. Clone Graph (https://leetcode.com/problems/clone-graph/)
+class Solution {
+public:
+    Node* cloneGraph(Node* node) {
+        if(node == NULL)
+            return node;
+        unordered_map<Node*, Node*> visited;
+        queue<Node*> Q;
+        Q.push(node);
+        visited[node] = new Node(node->val);
+        while(!Q.empty()){
+           
+            Node* curr = Q.front();
+            Q.pop();
+            for(auto nei: curr->neighbors){
+                if(!visited[nei]){
+                     visited[nei] = new Node(nei->val);
+                     Q.push(nei);
+                }
+                visited[curr]->neighbors.push_back(visited[nei]);
+            }
+        }
+        return visited[node];
+    }
+};
+
+
+Q2-> DFS of Graph (https://practice.geeksforgeeks.org/problems/depth-first-traversal-for-a-graph/1)
+class Solution {
+  public:
+    // Function to return a list containing the DFS traversal of the graph
+    void solve(int node,vector<int> adj[],vector<int>& visit,vector<int>& dfs)
+    {
+        visit[node]=1;
+        dfs.push_back(node);
+        
+        for(auto i:adj[node])
+        {
+            if(visit[i]==0)
+            solve(i,adj,visit,dfs);
+        }
+    }
+    
+    vector<int> dfsOfGraph(int V, vector<int> adj[]) {
+       vector<int> visit(V,0);
+       vector<int> dfs;
+       solve(0,adj,visit,dfs);
+       return dfs;
+    }
+};
+
+
+Q3-> BFS of graph (https://practice.geeksforgeeks.org/problems/bfs-traversal-of-graph/1)
+class Solution {
+  public:
+    // Function to return Breadth First Traversal of given graph.
+    vector<int> bfsOfGraph(int v, vector<int> adj[]) {
+        // Code here
+     vector<int> ans;
+     vector<int> visit(v,0);
+     queue<int> q;
+     q.push(0);
+     visit[0]=1;
+     while(!q.empty())
+     {
+         int curr = q.front();
+         q.pop();
+     
+         ans.push_back(curr);
+         
+         for(auto it:adj[curr])
+         {
+             if(visit[it]==0)
+             {
+                 visit[it]=1;
+                 q.push(it);
+             }
+         }
+     }
+     return ans;
+    }
+};
+
+
+Q4-> Cycle Detection In Undirected Graph:BFS (https://www.codingninjas.com/codestudio/problems/1062670?topList=striver-sde-sheet-problems&utm_source=striver&utm_medium=website&leftPanelTab=0)
+#include <bits/stdc++.h>
+string cycleDetection (vector<vector<int>>& edges, int n, int m)
+{
+    vector<int> adj[n+1];
+    for(int i=0;i<edges.size();i++)
+    {
+        adj[edges[i][0]].push_back(edges[i][1]);
+        adj[edges[i][1]].push_back(edges[i][0]);
+    }
+    vector<int> visit(n+1,0);
+    for(int i=0;i<n;i++){
+        if(visit[i+1]==0){
+       queue<pair<int,int>> q;
+      q.push({i+1,-1});
+      visit[i+1]=1;
+      while(!q.empty())
+      {
+          int node=q.front().first;
+          int par=q.front().second;
+           q.pop();
+          for(auto it:adj[node])
+          {
+              if(visit[it]==0)
+              {
+                 visit[it]=1;
+                 q.push({it,node});
+              }
+               else if(it!=par)
+                return "Yes";
+          }
+      }
+        }
+    }
+    return "No";
+}
+
+
+Q5-> Cycle Detection In Undirected Graph:DFS (https://www.codingninjas.com/codestudio/problems/1062670?topList=striver-sde-sheet-problems&utm_source=striver&utm_medium=website&leftPanelTab=0)
+#include <bits/stdc++.h>
+bool dfs(int node,vector<int> adj[],vector<int>& visit,int par)
+{
+    visit[node]=1;
+    for(auto i:adj[node])
+    {
+        if(visit[i]==0)
+        {
+            if(dfs(i,adj,visit,node))
+                return true;
+        }
+        else if(i!=par)
+            return true;
+    }
+    return false;
+}
+string cycleDetection (vector<vector<int>>& edges, int n, int m)
+{
+    vector<int> adj[n+1];
+    for(int i=0;i<edges.size();i++)
+    {
+        adj[edges[i][0]].push_back(edges[i][1]);
+        adj[edges[i][1]].push_back(edges[i][0]);
+    }
+    vector<int> visit(n+1,0);
+    for(int i=0;i<n;i++)
+    {
+        if(visit[i]==0)
+        {
+            if(dfs(i,adj,visit,-1))
+                return "Yes";
+        }
+    }
+    return "No";
+}
+
+
+Q6-> Detect Cycle In A Directed Graph:DFS (https://www.codingninjas.com/codestudio/problems/1062626?topList=striver-sde-sheet-problems&utm_source=striver&utm_medium=website&leftPanelTab=0)
+bool dfs(int node,vector<int> adj[],vector<int>& visit,vector<int>& dfsvisit)
+{
+    visit[node]=1;
+    dfsvisit[node]=1;
+    for(auto i:adj[node])
+    {
+        if(visit[i]==0)
+        {
+            if(dfs(i,adj,visit,dfsvisit))
+                return true;
+        }
+        else if(dfsvisit[i])
+            return true;
+    }
+    dfsvisit[node]=0;
+    return false;
+}
+int detectCycleInDirectedGraph(int n, vector < pair < int, int >> & edges) {
+     vector<int> adj[n+1];
+    for(int i=0;i<edges.size();i++)
+    {
+        adj[edges[i].first].push_back(edges[i].second);
+    }
+    vector<int> visit(n+1,0),dfsvisit(n+1,0);
+     for(int i=0;i<n;i++)
+    {
+        if(visit[i+1]==0)
+        {
+            if(dfs(i+1,adj,visit,dfsvisit))
+                return 1;
+        }
+    }
+     return 0;
+}
+
+
+Q7-> Detect Cycle In A Directed Graph:BFS (https://leetcode.com/problems/course-schedule/)
+class Solution {
+public:
+   bool canFinish(int n, vector<vector<int>>& p) {
+        vector<int>adj[n];
+        for(int i=0;i<p.size();i++)
+        {
+            adj[p[i][0]].push_back(p[i][1]);
+        }
+        vector<int>indegree(n,0);
+        for(int i=0;i<n;i++)
+        {
+            for(auto it:adj[i])
+                indegree[it]++;
+        }
+        queue<int>q;
+        for(int i=0;i<n;i++)
+        {
+            if(indegree[i]==0)
+                q.push(i);
+        }
+        int count=0;
+        while(!q.empty())
+        {
+            int node=q.front();
+            q.pop();
+            count++;
+            for(auto it:adj[node])
+            {
+                indegree[it]--;
+                if(indegree[it]==0)
+                    q.push(it);
+            }
+        }
+        if(count==n)
+            return true;
+        else
+            return false;
+    }
+};
+
+
+Q8-> Topological sort:BFS (https://practice.geeksforgeeks.org/problems/topological-sort/1)
+	vector<int> topoSort(int v, vector<int> adj[]) 
+	{
+	    // code here
+	    queue<int> q;
+	    vector<int> ans,inorder(v,0);
+	    for(int i=0;i<v;i++)
+	    {
+	        for(auto it: adj[i])
+	        inorder[it]++;
+	    }
+	    for(int i=0;i<v;i++)
+	    {
+	        if(inorder[i]==0)
+	        q.push(i);
+	    }
+	    while(!q.empty())
+	    {
+	        int curr = q.front();
+	        q.pop();
+	        ans.push_back(curr);
+	        for(auto it : adj[curr])
+	        {
+	            inorder[it]--;
+	            if(inorder[it]==0)
+	            q.push(it);
+	        }
+	    }
+	    return ans;
+	}
+
+
+Q9-> Topological sort:DFS (https://practice.geeksforgeeks.org/problems/topological-sort/1)
+void dfs(int s,vector<int>&vis,stack<int>&st,vector<int> adj[])
+{
+   vis[s]=1;
+   for(auto it:adj[s])
+   {
+       if(vis[it]==0)
+       dfs(it,vis,st,adj);
+   }
+   st.push(s);
+}
+vector<int> topoSort(int v, vector<int> adj[])
+{
+   // code here
+   stack<int>st;
+   vector<int>ans;
+   vector<int>vis(v,0);
+   for(int i=0;i<v;i++)
+   {
+       if(vis[i]==0)
+       {
+           dfs(i,vis,st,adj);
+       }
+   }
+   while(!st.empty())
+   {
+       ans.push_back(st.top());
+       st.pop();
+   }
+   return ans;
+}
+
+
+Q10-> 200. Number of Islands (https://leetcode.com/problems/number-of-islands/)
+class Solution {
+public:
+    void dfs(int i,int j,vector<vector<int>>& visit,vector<vector<char>>& grid,int n,int m)
+    {
+        if(i<0||j<0||i>=n||j>=m)
+        return ;
+        if(grid[i][j]=='0')
+        return ;
+        if(visit[i][j]==1)
+        return ;
+        
+            visit[i][j]=1;
+            dfs(i+1,j,visit,grid,n,m);
+            dfs(i-1,j,visit,grid,n,m);
+            dfs(i,j+1,visit,grid,n,m);
+            dfs(i,j-1,visit,grid,n,m);
+    }
+    int numIslands(vector<vector<char>>& grid) {
+        // Code here
+        int n = grid.size();
+        int m = grid[0].size();
+        vector<vector<int>> visit(n,vector<int>(m,0));
+        int c=0;
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(visit[i][j]==0 && grid[i][j]=='1')
+                {
+                    dfs(i,j,visit,grid,n,m);
+                    c++;
+                }
+            }
+        }
+        return c;
+    }
+};
+
+
+Q11-> 785. Is Graph Bipartite?:BFS (https://leetcode.com/problems/is-graph-bipartite/)
+class Solution {
+public:
+   bool isBipartite(vector<vector<int>>& graph)
+    {
+        int n=graph.size();
+        vector<int>colour(n,-1);
+        for(int i=0;i<n;i++)
+        {
+            if(colour[i]==-1)
+            {
+                colour[i]=1;
+                queue<int>q;
+                q.push(i);
+                while(!q.empty())
+                {
+                    int node=q.front();
+                    q.pop();
+                    for(auto it:graph[node])
+                    {
+                        if(colour[it]==colour[node])
+                        {
+                            return false;
+                        }
+                        else if(colour[it]==-1)
+                        {
+                            colour[it]=1-colour[node];
+                            q.push(it);
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }  
+};
+
+
+Q12-> 785. Is Graph Bipartite?:DFS (https://leetcode.com/problems/is-graph-bipartite/)
+class Solution {
+public:
+  bool dfs(int temp,vector<int>&color,vector<vector<int>> adj)
+    {
+        if(color[temp]==-1)
+            color[temp]=1;
+        for(auto it:adj[temp])
+        {
+            if(color[it]==-1)
+            {
+                color[it]=1-color[temp];
+                if(!dfs(it,color,adj))
+                    return false;
+            }
+            else if(color[it]==color[temp])
+                return false;
+        }
+        return true;
+    }
+    bool isBipartite(vector<vector<int>>& graph)
+    {
+        int n=graph.size();
+        vector<int>color(n,-1);
+        for(int i=0;i<n;i++)
+        {
+            if(color[i]==-1)
+            {
+                if(!dfs(i,color,graph))
+                  return false;  
+            }
+        }
+        return true;
+    }
+};
