@@ -1,0 +1,187 @@
+Q1-> 152. Maximum Product Subarray (https://leetcode.com/problems/maximum-product-subarray/)
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int ans=INT_MIN;
+        int l=1,r=1;
+        for(int i=0;i<nums.size();i++)
+        {
+           if(l==0)
+               l=1;
+            
+            l*=nums[i];
+            
+            if(r==0)
+                r=1;
+            
+            r*=nums[nums.size()-i-1];
+            ans=max(ans,max(l,r));
+        }
+        return ans; 
+    }
+};
+
+
+Q2-> 300. Longest Increasing Subsequence (https://leetcode.com/problems/longest-increasing-subsequence/)
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+       int n = nums.size();
+       multiset<int> s;
+        for(int i=0;i<n;i++)
+        {
+            s.insert({nums[i]});
+            auto j=lower_bound(s.begin(),s.end(),nums[i]);
+            j++;
+            if(j!=s.end())
+                s.erase(j);
+        }
+        return s.size();
+            
+    }
+};
+
+
+Q3-> 1143. Longest Common Subsequence (https://leetcode.com/problems/longest-common-subsequence/)
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int n=text1.size(),m=text2.size();
+        vector<vector<int>> dp(n+1,vector<int>(m+1,0));
+        
+        for(int i=1;i<n+1;i++)
+        {
+            for(int j=1;j<m+1;j++)
+            {
+                if(text1[i-1]==text2[j-1])
+                    dp[i][j]=1+dp[i-1][j-1];
+                else
+                {
+                    dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+                }
+            }
+        }
+        return dp[n][m];
+    }
+};
+
+
+Q4-> 474. Ones and Zeroes (https://leetcode.com/problems/ones-and-zeroes/)
+class Solution {
+public:
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        
+        vector<vector<int>> dp(m+1,vector<int>(n+1,0));
+        
+        for(int i=0;i<strs.size();i++)
+        {
+            int a=0,b=0;
+            for(int j=0;j<strs[i].size();j++)
+            {
+                if(strs[i][j]=='0')
+                    a++;
+                else if(strs[i][j]=='1')
+                    b++;
+            }
+            
+            for(int k=m;k>=a;k--)
+            {
+                for(int l=n;l>=b;l--)
+                {
+                    dp[k][l]=max(dp[k][l],dp[k-a][l-b]+1);
+                }
+            }
+            
+        }
+        return dp[m][n];
+    }
+};
+
+
+Q5-> 72. Edit Distance (https://leetcode.com/problems/edit-distance/)
+class Solution {
+public:
+    int solve(int n,int m,string word1,string word2,vector<vector<int>>& dp)
+    {
+        if(n==-1)
+            return m+1;
+        if(m==-1)
+            return n+1;
+        
+        if(dp[n][m]!=-1)
+            return dp[n][m];
+        
+        if(word1[n]==word2[m])
+            return dp[n][m] = solve(n-1,m-1,word1,word2,dp);
+        
+        int del=solve(n-1,m,word1,word2,dp);
+        int ins=solve(n,m-1,word1,word2,dp);
+        int rep=solve(n-1,m-1,word1,word2,dp);
+        
+        return dp[n][m] = 1+min({del,ins,rep});
+    }
+    int minDistance(string word1, string word2) {
+        vector<vector<int>> dp(word1.length(),vector<int>(word2.length(),-1));
+        return solve(word1.length()-1,word2.length()-1,word1,word2,dp);
+    }
+};
+
+
+Q6-> Maximum sum increasing subsequence (https://practice.geeksforgeeks.org/problems/maximum-sum-increasing-subsequence4749/1)
+class Solution{
+	public:
+	int maxSumIS(int arr[], int n)  
+	{  
+	    vector<int> dp(n);
+	    for(int i=0;i<n;i++)
+	    dp[i]=arr[i];
+	    
+	    
+	    for(int i=0;i<n;i++)
+	    {
+	        for(int j=0;j<i;j++)
+	        {
+	            if(arr[j]<arr[i])
+	            {
+	                dp[i]=max(dp[i],dp[j]+arr[i]);
+	            }
+	        }
+	    }
+	    int ans=INT_MIN;
+	    for(int i=0;i<n;i++)
+	    {
+	        ans=max(ans,dp[i]);
+	    }
+	    return ans;
+	}  
+};
+
+
+Q7-> Matrix Chain Multiplication (https://practice.geeksforgeeks.org/problems/matrix-chain-multiplication0303/1)
+class Solution{
+public:
+ 
+    int solve(int i,int j,int arr[],vector<vector<int>>& dp)
+    {
+        if(i>=j)
+        return 0;
+        if(dp[i][j]!=-1)
+        return dp[i][j];
+        
+        int ans=INT_MAX;
+        for(int k=i;k<=j-1;k++)
+        {
+            int c1=solve(i,k,arr,dp);
+            int c2=solve(k+1,j,arr,dp);
+            int temp=c1+c2+arr[i-1]*arr[k]*arr[j];
+            ans=min(ans,temp);
+        }
+        return dp[i][j]=ans;
+    }
+    int matrixMultiplication(int N, int arr[])
+    {
+        vector<vector<int>> dp(N,vector<int>(N,-1));
+        return solve(1,N-1,arr,dp);
+        
+    }
+};
