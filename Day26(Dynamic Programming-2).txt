@@ -1,0 +1,255 @@
+Q1-> 64. Minimum Path Sum (https://leetcode.com/problems/minimum-path-sum/)
+class Solution {
+public:
+   int minPathSum(vector<vector<int>>& grid) {
+    int m = grid.size();
+    int n = grid[0].size();
+    vector<vector<int>> dp(m,vector<int>(n,0));
+    dp[0][0] = grid[0][0];
+    for(int i=1;i<m;i++)
+        dp[i][0] = dp[i-1][0] + grid[i][0];
+    for(int j=1;j<n;j++)
+        dp[0][j] = dp[0][j-1] + grid[0][j];
+     for(int i=1;i<m;i++)
+         for(int j=1;j<n;j++)
+             dp[i][j] = min(dp[i-1][j],dp[i][j-1]) + grid[i][j];
+        return dp[m-1][n-1];
+    }
+};
+
+
+Q2-> 322. Coin Change (https://leetcode.com/problems/coin-change/)
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        vector<vector<int>> dp(coins.size()+1,vector<int>(amount+1));
+        for(int i=0;i<coins.size()+1;i++)
+        {
+            for(int j=0;j<amount+1;j++)
+            {
+                if(i==0)
+                    dp[i][j]=INT_MAX-1;
+                if(j==0)
+                    dp[i][j]=0;
+            }
+        }
+        for(int i=1;i<coins.size()+1;i++)
+        {
+            for(int j=1;j<amount+1;j++)
+            {
+                if(coins[i-1]<=j)
+                    dp[i][j]=min(1+dp[i][j-coins[i-1]],dp[i-1][j]);
+                else
+                    dp[i][j]=dp[i-1][j];
+            }
+        }
+        
+        int ans=dp[coins.size()][amount];
+        if(ans==INT_MAX-1)
+            return -1;
+        
+        return ans;
+    }
+};
+
+
+Q3-> 416. Partition Equal Subset Sum (https://leetcode.com/problems/partition-equal-subset-sum/)
+class Solution {
+public:
+    int find(vector<int>& nums,int k,int n, vector<vector<int>>& dp)
+    {
+        if(k==0)
+            return 1;
+        if(n==-1)
+            return 0;
+        if(dp[n][k]!=-1)
+            return dp[n][k];
+        
+        if(nums[n]<=k)
+            return dp[n][k]=find(nums,k-nums[n],n-1,dp)||find(nums,k,n-1,dp);
+        else
+            return dp[n][k]= find(nums,k,n-1,dp);
+            
+    }
+    bool canPartition(vector<int>& nums) {
+        int sum=0;
+        for(int i=0;i<nums.size();i++)
+            sum=sum+nums[i];
+        
+        if(sum%2==1)
+            return false;
+        
+        sum=sum/2;
+         vector<vector<int>> dp(nums.size(),vector<int>(sum+1,-1));
+        int ans= find(nums,sum,nums.size()-1,dp);
+        if(ans==1)return true;
+        return  false;
+    }
+};
+
+
+Q4-> 1547. Minimum Cost to Cut a Stick (https://leetcode.com/problems/minimum-cost-to-cut-a-stick/)
+class Solution {
+public:
+   int dp[102][102] = {};
+int dfs(vector<int>& cuts, int i, int j) {
+    if (i>j)
+        return 0;
+    if (!dp[i][j]) {
+        dp[i][j] = INT_MAX;
+        for (auto k = i ; k <= j; ++k)
+            dp[i][j] = min(dp[i][j], 
+                cuts[j+1] - cuts[i-1] + dfs(cuts, i, k-1) + dfs(cuts, k+1, j));
+    }
+    return dp[i][j];
+}
+int minCost(int n, vector<int>& cuts) {
+    cuts.push_back(0);
+    cuts.push_back(n);
+    sort(begin(cuts), end(cuts));
+    return dfs(cuts, 1, cuts.size() - 2);
+}
+};
+
+
+Q5-> Egg Dropping Puzzle (https://practice.geeksforgeeks.org/problems/egg-dropping-puzzle-1587115620/1)
+class Solution
+{
+    public:
+    //Function to find minimum number of attempts needed in 
+    //order to find the critical floor.
+    int dp[205][205];
+    int solve(int e,int f)
+    {
+        if(f==0||f==1)
+        return f;
+        if(e==1)
+        return f;
+        
+        if(dp[e][f]!=-1)
+        return dp[e][f];
+        
+        int ans=INT_MAX;
+        for(int k=1;k<=f;k++)
+        {
+            int temp=1+max(solve(e-1,k-1),solve(e,f-k));
+            ans=min(ans,temp);
+        }
+        return dp[e][f]=ans;
+    }
+    int eggDrop(int n, int k) 
+    {
+       memset(dp,-1,sizeof(dp));
+       return solve(n,k);
+    }
+};
+
+
+Q6-> 139. Word Break (https://leetcode.com/problems/word-break/)
+class Solution {
+public:
+    unordered_map<string, int> map;
+    int dp[305][305];
+    bool solve(string &s, int n, int start){
+        if(start==n) return true;
+        if(dp[start][n]!=-1) return dp[start][n];
+        for(int i=start; i<n; ++i){
+            string str = s.substr(start,i-start+1);
+            if(map.find(str)!=map.end()){
+                if(solve(s,n,i+1)) return dp[start][n] = true;
+            }
+        }
+        return dp[start][n] = false;
+    }
+    bool wordBreak(string &s, vector<string>& wordDict) {
+        memset(dp,-1,sizeof(dp));
+        for(auto &word : wordDict) map[word]++;
+        int n=s.size();
+        return solve(s,n,0);
+    }
+};
+
+
+Q7-> Palindromic Partitioning (https://practice.geeksforgeeks.org/problems/palindromic-patitioning4845/1)
+class Solution{
+public:
+bool is_pali(int s,int e,string str)
+{
+    while(s<=e)
+    {
+        if(str[s]==str[e])
+        {
+            s++;
+            e--;
+        }
+        else
+        return false;
+    }
+    return true;
+}
+    int solve(int i,int j,string str,vector<vector<int>>& dp)
+    {
+        if(i>=j)
+        return 0;
+        
+        if(dp[i][j]!=-1)
+        return dp[i][j];
+        
+        if(is_pali(i,j,str))
+        return 0;
+        
+        int ans=INT_MAX;
+        for(int k=i;k<=j-1;k++)
+        {
+            int c1=dp[i][k]==-1?dp[i][k]=solve(i,k,str,dp):dp[i][k];
+            int c2=dp[k+1][j]==-1?dp[k+1][j]=solve(k+1,j,str,dp):dp[k+1][j];
+            ans=min(ans,1+c1+c2);
+        }
+        return dp[i][j] = ans;
+    }
+    int palindromicPartition(string str)
+    {
+        vector<vector<int>> dp(str.size(),vector<int>(str.size(),-1));
+        return solve(0,str.size()-1,str,dp);
+    }
+};
+
+
+Q8-> Job Sequencing Problem (https://practice.geeksforgeeks.org/problems/job-sequencing-problem-1587115620/1)
+class Solution 
+{
+    public:
+    //Function to find the maximum profit and the number of jobs done.
+     bool static comparison(Job a, Job b) {
+         return (a.profit > b.profit);
+      }
+   //Function to find the maximum profit and the number of jobs done
+   vector<int> JobScheduling(Job arr[], int n) {
+
+      sort(arr, arr + n, comparison);
+      int maxi = arr[0].dead;
+      for (int i = 1; i < n; i++) {
+         maxi = max(maxi, arr[i].dead);
+      }
+
+      int slot[maxi + 1];
+
+      for (int i = 0; i <= maxi; i++)
+         slot[i] = -1;
+
+      int countJobs = 0, jobProfit = 0;
+
+      for (int i = 0; i < n; i++) {
+         for (int j = arr[i].dead; j > 0; j--) {
+            if (slot[j] == -1) {
+               slot[j] = i;
+               countJobs++;
+               jobProfit += arr[i].profit;
+               break;
+            }
+         }
+      }
+
+      return {countJobs, jobProfit};
+   }
+};
